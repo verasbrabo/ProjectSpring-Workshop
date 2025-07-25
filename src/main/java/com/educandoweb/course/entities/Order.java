@@ -3,6 +3,7 @@ package com.educandoweb.course.entities;
 import com.educandoweb.course.entities.enuns.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.aspectj.weaver.tools.ISupportsMessageContext;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -31,6 +32,7 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "id.order")
     private Set<OrderItem> items = new HashSet<>();
 
+
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
@@ -39,6 +41,13 @@ public class Order implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
         return Objects.equals(id, order.id);
+    }
+
+    public Double getTotal(){
+        double sum = 0.0;
+        for (OrderItem x : items)
+            sum +=  x.getSubTotal();
+        return sum;
     }
 
     @Override
